@@ -1,4 +1,10 @@
 ---
+#  - name: Setting locales
+#    shell: echo $LANGUAGE $LC_ALL
+#    environment:
+#      LANGUAGE: "en_US.UTF-8"
+#      LC_ALL: "en_US.UTF-8"
+
   - name: System update and upgrade
     apt:
       upgrade: dist
@@ -69,12 +75,16 @@
 
   - name: Add user to docker group
     user:
-      name: zerof
+      name:
+        - {{user}}
       group: docker
       append: yes
 
   - name: Start docker
     systemd: name=docker state=started
+
+  - include: php7.yml
+    tags: php7
 
   - name: Restart server
     become: yes

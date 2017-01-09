@@ -1,1 +1,2 @@
 host_ip: your_server_ip
+user: server_nonroot_user
