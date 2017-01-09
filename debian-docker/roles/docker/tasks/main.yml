@@ -1,0 +1,87 @@
+---
+  - name: System update and upgrade
+    apt:
+      upgrade: dist
+      update_cache: yes
+
+  - name: Keyring Install
+    apt:
+      name: debian-keyring
+      state: present
+
+  - name: Archive keyring Install
+    apt:
+      name: debian-archive-keyring
+      state: present
+
+  - name: Install tls repository package support
+    apt:
+      name: apt-transport-https
+      state: present
+
+  - name: Install ca-certificates
+    apt:
+      name: ca-certificates
+      state: present
+
+  - name: Install gnupg2
+    apt:
+      name: gnupg2
+      state: present
+
+  - name: Add docker repository
+    apt_repository:
+     repo: deb https://apt.dockerproject.org/repo debian-jessie main
+     state: present
+     update_cache: yes
+
+  - name: Add docker repository key
+    apt_key:
+      keyserver: hkp://ha.pool.sks-keyservers.net
+      id: 58118E89F3A912897C070ADBF76221572C52609D
+      state: present
+
+  - name: Add backports repository
+    apt_repository:
+      repo: 'deb http://ftp.fr.debian.org/debian/ jessie-backports main'
+      state: present
+      update_cache: yes
+
+#  - name: Run apt-key update
+#    command: apt-key update
+
+  - name: Install pip
+    apt:
+      name: python-pip
+      state: present
+      update_cache: no
+
+  - name: Update pip
+    pip: name=pip state=latest
+
+  - name: Docker Install
+    apt:
+      name: docker-engine
+      state: present
+
+  - name: Install docker-compose
+    pip: name=docker-compose state=present
+
+  - name: Add user to docker group
+    user:
+      name: zerof
+      group: docker
+      append: yes
+
+  - name: Start docker
+    systemd: name=docker state=started
+
+  - name: Restart server
+    become: yes
+    shell: sleep 2 && /sbin/shutdown -r now "Docker installed and set"
+    async: 1
+    poll: 0
+
+  - name: Wait for reboot
+    local_action: wait_for host={{ host_ip }} port=22 delay=10 state=started
+    become: false
