@@ -37,10 +37,16 @@
 
   - name: Add docker repository key
     apt_key:
-      keyserver: hkp://ha.pool.sks-keyservers.net
+      keyserver: hkp://ha.pool.sks-keyservers.net:80
       id: 58118E89F3A912897C070ADBF76221572C52609D
       state: present
-
+    register: add_repository_key
+    ignore_errors: true    
+  
+  - name: If apt_key failed to do his job
+    shell: "curl -sSL hkp://p80.pool.sks-keyservers.net:80 | sudo apt-key add -"
+    when: add_repository_key|failed      
+  
   - name: Add backports repository
     apt_repository:
       repo: 'deb http://ftp.fr.debian.org/debian/ jessie-backports main'
