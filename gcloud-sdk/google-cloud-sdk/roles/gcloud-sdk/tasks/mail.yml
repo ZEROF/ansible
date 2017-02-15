@@ -1,0 +1,22 @@
+  - name: Add docker repository
+    apt_repository:
+     repo: deb https://packages.cloud.google.com/apt cloud-sdk-jessie main
+     state: present
+     update_cache: yes
+
+  - name: Install curl
+      apt:
+      name: {{ package }}
+      state: present
+
+  - name: Add keyring
+    apt_key:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      state: present
+      
+  - name: Installation gcloud sdk
+    apt:
+      name: {{ gcloud-sdk }}
+      state: present
+      update_cache: no
+

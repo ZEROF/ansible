@@ -1,0 +1,2 @@
+package: curl
+gcloud-sdk: google-cloud-sdk
