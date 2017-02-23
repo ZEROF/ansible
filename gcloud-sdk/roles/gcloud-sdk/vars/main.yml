@@ -1,2 +1,3 @@
 package: curl
-gcloud-sdk: google-cloud-sdk
+https: apt-transport-https
+gcloud_sdk: google-cloud-sdk
